@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MindHub</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="loginView" class="login-view">
+      <form id="loginForm" class="card shadow-sm rounded-3 p-4 login-card">
+        <h1 class="h6 fw-bold mb-3">Login</h1>
+        <div class="mb-2">
+          <label class="form-label small text-secondary">Email</label>
+          <input id="loginEmail" type="email" class="form-control" placeholder="test@example.com" />
+        </div>
+        <div class="mb-2">
+          <label class="form-label small text-secondary">Password</label>
+          <input id="loginPassword" type="password" class="form-control" placeholder="Password123" />
+        </div>
+        <button id="loginBtn" type="submit" class="btn btn-dark w-100 mt-2">Accedi</button>
+        <div id="loginError" class="text-danger small mt-2"></div>
+      </form>
+    </div>
+
+    <div id="dashboardView" class="dashboard hidden">
+      <!-- NAV CONTROLS FISSI IN ALTO A SINISTRA -->
+      <div class="fixed-nav-controls" id="fixedNavControls">
+        <button
+          id="backBtn"
+          class="nav-control-btn back-arrow hidden"
+          aria-label="Torna indietro"
+        ></button>
+        <button id="sidebarTriggerBtn" class="nav-control-btn" aria-label="Apri libreria">
+          <i class="bi bi-folder-symlink-fill"></i>
+        </button>
+      </div>
+
+      <!-- OVERLAY SCURO (TENDINA) -->
+      <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+      <!-- SIDEBAR A SCOMPARSA (VS CODE TREE VIEW) -->
+      <aside id="sidebarDrawer" class="sidebar-drawer">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">Libreria</h2>
+        </div>
+        <div id="sidebarTree"></div>
+        
+        <button id="home-view-toggle">📁</button>
+      </aside>
+
+      <!-- CONTENUTO PRINCIPALE -->
+      <main class="main-content">
+        <div class="container-fluid py-4">
+          <div id="searchModal" class="global-search-container">
+            <div class="search-input-wrapper">
+              <i class="bi bi-search"></i>
+              <input
+                id="searchInput"
+                type="text"
+                class="search-input"
+                placeholder="Cerca o vai a... (Ctrl+K)"
+              />
+            </div>
+            <div id="searchResults" class="search-results-list hidden">
+              <!-- I risultati della ricerca verranno inseriti qui -->
+            </div>
+          </div>
+          
+          <!-- VISTA CARTELLE -->
+          <div id="view-folders">
+            <div id="contentGrid" class="content-grid"></div>
+          </div>
+          
+          <!-- VISTA DASHBOARD -->
+          <div id="view-dashboard" class="hidden">
+            <div class="dashboard-section mt-4">
+              <h4 class="text-white mb-3">Film Recenti</h4>
+              <div id="dash-movies" class="dashboard-carousel">
+                <!-- Griglia scorrimento orizzontale -->
+              </div>
+            </div>
+            <div class="dashboard-section mt-4">
+              <h4 class="text-white mb-3">Musica in Loop</h4>
+              <div id="dash-music" class="dashboard-carousel">
+                <!-- Griglia scorrimento orizzontale -->
+              </div>
+            </div>
+            <div class="dashboard-section mt-4">
+              <h4 class="text-white mb-3">Ultimi Pensieri</h4>
+              <div id="dash-notes" class="dashboard-carousel">
+                <!-- Griglia scorrimento orizzontale -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <div class="create-panel">
+        <div id="createForm" class="create-form d-none">
+          <div class="create-header">
+            <h3 class="create-title">Crea contenuto</h3>
+            <p class="create-subtitle">Scegli il tipo e aggiungi i dettagli.</p>
+          </div>
+          <div class="create-type-grid">
+            <button type="button" class="create-type-btn" data-type="box">
+              <i class="bi bi-folder-fill"></i>
+              Cartella
+            </button>
+            <button type="button" class="create-type-btn" data-type="movie">
+              <i class="bi bi-film"></i>
+              Movie
+            </button>
+            <button type="button" class="create-type-btn" data-type="music">
+              <i class="bi bi-music-note-beamed"></i>
+              Music
+            </button>
+            <button type="button" class="create-type-btn" data-type="note">
+              <i class="bi bi-file-earmark-text"></i>
+              Pensiero
+            </button>
+            <button type="button" class="create-type-btn" data-type="todo_list">
+              <i class="bi bi-check2-square"></i>
+              To-Do
+            </button>
+            <button type="button" class="create-type-btn" data-type="recipe">
+              <i class="bi bi-egg-fried"></i>
+              Recipe
+            </button>
+          </div>
+          <div id="movieSearchBlock" class="mb-2 d-none">
+            <label class="form-label small text-secondary">Cerca film (TMDB)</label>
+            <div class="input-group input-group-sm">
+              <input id="movieQuery" type="text" class="form-control" placeholder="Es. Interstellar" />
+            </div>
+            <div id="movieResults" class="list-group list-group-flush mt-2"></div>
+          </div>
+          <div id="musicSearchBlock" class="mb-2 d-none">
+            <label class="form-label small text-secondary">Cerca album (iTunes)</label>
+            <div class="input-group input-group-sm">
+              <input id="musicQuery" type="text" class="form-control" placeholder="Es. Daft Punk" />
+            </div>
+            <div id="musicResults" class="list-group list-group-flush mt-2"></div>
+          </div>
+          <div id="titleBlock" class="mb-2">
+            <label class="form-label small text-secondary">Title</label>
+            <input id="contentTitle" type="text" class="form-control form-control-sm" placeholder="Titolo" />
+          </div>
+          <div id="tagsBlock" class="mb-2">
+            <label class="form-label small text-secondary">Tags (opzionale)</label>
+            <input id="contentTags" type="text" class="form-control form-control-sm" placeholder="idea, lavoro" />
+          </div>
+          
+          <button id="createBtn" class="create-btn">Crea</button>
+          
+          <div id="createError" class="text-danger small mt-2"></div>
+        </div>
+        
+        <button id="toggleCreate">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="recipeView" class="recipe-view hidden">
+      <div class="container py-4">
+        <div class="recipe-card">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <button
+              id="recipeBackBtn"
+              class="btn btn-outline-dark btn-sm back-arrow"
+              aria-label="Torna ai contenuti"
+            ></button>
+          </div>
+          <h1 id="recipeTitle" class="display-5 fw-bold mb-4"></h1>
+          <h6 class="text-uppercase text-secondary small">Ingredienti</h6>
+          <ul id="recipeIngredients" class="list-group list-group-flush mb-4"></ul>
+          <h6 class="text-uppercase text-secondary small">Preparazione</h6>
+          <div id="recipeSteps" class="list-group list-group-flush"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="noteView" class="note-view hidden">
+      <div class="container py-4">
+        <div class="note-card">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <button
+              id="noteBackBtn"
+              class="btn btn-outline-dark btn-sm back-arrow"
+              aria-label="Torna ai contenuti"
+            ></button>
+            <span id="noteStatus" class="save-status"></span>
+          </div>
+          <h1 class="note-heading">Pensieri</h1>
+          <div class="title-group mb-3">
+            <span id="noteStatus" class="save-status"></span>
+            <input
+              id="noteTitle"
+              type="text"
+              class="form-control form-control-lg note-title"
+              placeholder="Titolo nota"
+            />
+          </div>
+          <div id="noteEditor" class="note-editor"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="todoView" class="todo-view hidden">
+      <div class="fixed-nav-controls">
+        <button id="todoBackBtn" class="nav-control-btn back-arrow" aria-label="Torna ai contenuti"></button>
+      </div>
+      <div class="container py-4">
+        <div class="todo-card">
+          <div class="d-flex align-items-center justify-content-end mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <button id="todoClearCompletedBtn" class="btn btn-sm">
+                <i class="bi bi-check-lg"></i>
+                Cancella Completati
+              </button>
+              <button id="todoAddBtn" class="btn btn-sm">
+                <i class="bi bi-plus-lg"></i>
+                Aggiungi
+              </button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <span id="todoStatus" class="small text-secondary mb-2" style="min-height: 1.2em; display: inline-block;"></span>
+          </div>
+          <input
+            id="todoTitle"
+            type="text"
+            class="form-control form-control-lg mb-3 todo-title"
+            placeholder="Titolo lista"
+          />
+          <div id="todoList" class="todo-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="contextMenu" class="context-menu hidden">
+      <button id="contextEdit" type="button">
+        <i class="bi bi-pencil"></i>
+        Modifica
+      </button>
+      <button id="contextDelete" type="button" class="text-danger">
+        <i class="bi bi-trash"></i>
+        Elimina
+      </button>
+    </div>
+
+    <!-- Search Modal / Command Palette -->
+    <div id="searchModal" class="search-modal-overlay hidden">
+      <div class="search-modal-container">
+        <div class="search-input-wrapper">
+          <i class="bi bi-search"></i>
+          <input
+            id="searchInput"
+            type="text"
+            class="search-input"
+            placeholder="Cerca note, film, cartelle..."
+          />
+        </div>
+        <div id="searchResults" class="search-results-list">
+          <!-- I risultati della ricerca verranno inseriti qui -->
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
