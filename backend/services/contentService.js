@@ -3,7 +3,7 @@ const pool = require("../config/db"); // Already lowercase, no change needed
 class contentService {
   static async getAllContentsForUser(userId) {
     const result = await pool.query(
-      "SELECT id, type, title, payload FROM contents WHERE user_id = $1",
+      "SELECT id, type, title, payload, created_at, updated_at FROM contents WHERE user_id = $1",
       [userId]
     );
     return result.rows;
@@ -35,7 +35,7 @@ class contentService {
 
   static async getFolders(userId) {
     const result = await pool.query(
-      "SELECT id, title, parent_id, type FROM contents WHERE user_id = $1 AND type = 'box' ORDER BY title ASC",
+      "SELECT id, title, parent_id, type, created_at, updated_at FROM contents WHERE user_id = $1 AND type = 'box' ORDER BY title ASC",
       [userId]
     );
     

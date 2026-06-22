@@ -209,9 +209,9 @@ export const initApp = () => {
 
         // --- DASHBOARD POPULATION ---
         if (allUserContents && allUserContents.length > 0) {
-          const recentMovies = allUserContents.filter(i => i.type === 'movie').slice(0, 10);
-          const loopMusic = allUserContents.filter(i => i.type === 'music').slice(0, 10);
-          const latestNotes = allUserContents.filter(i => i.type === 'note').slice(0, 10);
+          const recentMovies = allUserContents.filter(i => i.type === 'movie').slice(0, 6);
+          const loopMusic = allUserContents.filter(i => i.type === 'music').slice(0, 4);
+          const latestNotes = allUserContents.filter(i => i.type === 'note').slice(0, 3);
 
           if (dom.dashMovies) await contentsView.renderContentsGrid(recentMovies, { ...baseRenderOpts, targetContainer: dom.dashMovies, skipGridFormatting: true });
           if (dom.dashMusic) await contentsView.renderContentsGrid(loopMusic, { ...baseRenderOpts, targetContainer: dom.dashMusic, skipGridFormatting: true });

@@ -285,6 +285,45 @@ export const renderContentsGrid = async (
       tile.appendChild(musicCoverBox);
       tile.appendChild(linksBar);
       tile.appendChild(musicInfoArea);
+    } else if (item.type === 'note') {
+      tile.classList.add("note-card");
+
+      const rawDate = item.updated_at || item.created_at || item.updatedAt || item.createdAt ||
+                      item.payload?.updated_at || item.payload?.created_at || item.payload?.updatedAt || item.payload?.createdAt;
+
+      let dateString = "oggi";
+      if (rawDate) {
+          const d = new Date(rawDate);
+          if (!isNaN(d.getTime())) {
+              dateString = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).toLowerCase();
+          }
+      }
+
+      // Estrazione e pulizia preview (Retrocompatibilità text/html)
+      const rawText = item.payload?.html || item.payload?.text || "";
+      // Strip aggressivo di tutti i tag HTML generati da Quill e decodifica entità base
+      const cleanText = rawText.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+
+      let tagsHTML = '';
+      const tags = item.payload?.tags || [];
+      if (tags.length > 0) {
+          tagsHTML = '<div class="note-tags">';
+          tags.forEach(t => {
+              const tagLabel = t.startsWith('#') ? t : `#${t}`;
+              tagsHTML += `<span class="note-tag">${tagLabel}</span>`;
+          });
+          tagsHTML += '</div>';
+      }
+
+      tile.innerHTML = `
+          <div class="note-header">
+              <span class="note-date">${dateString}</span>
+              <i class="bi bi-three-dots note-options-icon"></i>
+          </div>
+          <h3 class="note-title">${item.title || "(Senza Titolo)"}</h3>
+          <p class="note-preview">${cleanText}</p>
+          ${tagsHTML}
+      `;
     } else {
       const icon = document.createElement("i");
       icon.className = `bi ${typeIcons[item.type] || "bi-dot"} content-icon fs-3`;
