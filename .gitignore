@@ -1,3 +1,7 @@
 node_modules/
 .env
 *.log
+.agents/
+.cursor/
+.replit
+.history/
