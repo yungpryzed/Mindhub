@@ -10,11 +10,15 @@ const typeIcons = {
   todo_list: "bi-check2-square",
 };
 
-const platformLogos = {
-  netflix: `<svg viewBox="0 0 24 24" width="16" height="16" fill="#E50914"><path d="M6.363 24L6.61 0h3.98l7.08 17.514V0h3.966v24h-3.951L10.334 5.992V24H6.363z"/></svg>`,
-  prime: `<svg viewBox="0 0 100 30" width="36" height="12"><path fill="#FFFFFF" d="M15.8,17.4h-3v5.8h-3.4V7.5h6.6c3.4,0,5.6,1.8,5.6,5C21.4,15.5,19.2,17.4,15.8,17.4z M15.6,10.2h-2.8v4.5h2.8c1.5,0,2.3-0.8,2.3-2.3C17.9,11,17.1,10.2,15.6,10.2z M24.3,23.2V11.6h3.2v1.6c0.8-1.2,2.1-1.9,3.7-1.9c0.4,0,0.8,0.1,1.1,0.2v3.2c-0.3-0.1-0.7-0.1-1.1-0.1c-2.1,0-3.6,1.3-3.6,3.6v5.1H24.3z M35.6,11.6h3.4v11.6h-3.4V11.6z M37.3,6.8c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2S36.2,6.8,37.3,6.8z M44.6,23.2V11.6h3.2v1.3c1-1,2.5-1.6,4.1-1.6c1.8,0,3.1,0.8,3.8,2.1c1.1-1.4,2.8-2.1,4.7-2.1c2.8,0,4.6,1.8,4.6,5v6.9h-3.4v-6c0-1.7-0.9-2.5-2.2-2.5c-1.4,0-2.5,1.1-2.5,2.9v5.6h-3.4v-6c0-1.7-0.9-2.5-2.2-2.5c-1.4,0-2.5,1.1-2.5,2.9v5.6H44.6z M70.3,17.9c0.1,2.1,1.6,3.3,3.8,3.3c1.7,0,3-0.5,4-1.2v2.4c-1.1,0.8-2.9,1.2-4.6,1.2c-4.2,0-6.6-2.5-6.6-6.1c0-3.6,2.2-6.1,6.1-6.1c3.9,0,5.6,2.6,5.6,5.8c0,0.3,0,0.5,0,0.7H70.3z M75.4,15.6c-0.1-1.5-1.1-2.4-2.5-2.4c-1.4,0-2.4,1-2.5,2.4H75.4z M83.2,21.5c-3.2,2.8-8.1,4.1-12.8,2.6c-1.6-0.5-3.3-1.4-4.7-2.6c-0.2-0.2-0.2-0.6,0.1-0.7c0.2-0.1,0.4-0.1,0.5,0c4.1,2.7,8.8,3.5,13.4,2.2c4.1-1.1,7.2-3.3,9.4-6c0.1-0.2,0.4-0.2,0.6-0.1C89.9,17.2,89.5,19.3,83.2,21.5z"/><path fill="#00A8E1" d="M83.2,21.5c-3.2,2.8-8.1,4.1-12.8,2.6c-1.6-0.5-3.3-1.4-4.7-2.6c-0.2-0.2-0.2-0.6,0.1-0.7c0.2-0.1,0.4-0.1,0.5,0c4.1,2.7,8.8,3.5,13.4,2.2c4.1-1.1,7.2-3.3,9.4-6c0.1-0.2,0.4-0.2,0.6-0.1C89.9,17.2,89.5,19.3,83.2,21.5z"/></svg>`,
-  apple: `<svg viewBox="0 0 384 512" width="13" height="13" fill="#FFFFFF"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>`,
-  disney: `<svg viewBox="0 0 24 24" width="16" height="16" fill="#FFFFFF"><path d="M12.92 7.78c-1.12-1.2-2.52-1.76-4.2-1.76-2.22 0-4.04.9-4.04 2.86 0 .42.1.8.3 1.13.23-.22.5-.42.8-.57-.45-.44-.57-.96-.4-1.36.4-1 2.3-.92 3.87.1 1.5.96 1.87 1.94 1.5 2.6-.08.14-.2.27-.36.38.3.06.6.14.88.24.4-.3.73-.67.95-1.1.58-1.12-.14-2.5-1.3-3.5z"/><path d="M20.25 10h-2.15V7.85h-1.35V10h-2.16v1.36h2.16v2.15h1.35v-2.15h2.15z"/></svg>`,
+// Ponytail: mappa unificata (DRY) per loghi di Film e Musica
+const platformIcons = {
+  netflix: '<svg viewBox="0 0 24 24" width="14" height="14" fill="#E50914"><path d="M6.363 24L6.61 0h3.98l7.08 17.514V0h3.966v24h-3.951L10.334 5.992V24H6.363z"/></svg>',
+  prime: '<i class="bi bi-amazon" style="color: #00A8E1;"></i>',
+  disney: '<img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+" style="height:14px; width:auto; vertical-align:middle;">',
+  apple: '<i class="bi bi-apple" style="color: #FFFFFF;"></i>',
+  spotify: '<i class="bi bi-spotify" style="color: #1DB954;"></i>',
+  amazon: '<i class="bi bi-amazon" style="color: #00A8E1;"></i>',
+  default: '<i class="bi bi-film"></i>'
 };
 
 export let extractZone = null;
@@ -136,22 +140,23 @@ export const renderFolderPreview = (container, items) => {
 
 const buildMovieBadgeHTML = (item) => {
   const platforms = item?.payload?.platforms || [];
-  const primaryPlatform = platforms[0] || "netflix";
-  const logoHTML = platformLogos[primaryPlatform] || platformLogos.netflix;
+  const primaryPlatform = item?.payload?.platform || platforms[0] || "netflix";
+  const pIcon = platformIcons[primaryPlatform] || platformIcons.default;
+  
   const runtime = Number(item?.payload?.runtime || 0);
-  const vote = Number(item?.payload?.vote_average || 0);
-  const voteStr = vote ? vote.toFixed(1) : "0.0";
-
   let durationStr = "";
   if (runtime > 0) {
     const hours = Math.floor(runtime / 60);
     const minutes = runtime % 60;
     durationStr = minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
   }
+  
+  const vote = Number(item?.payload?.vote_average || 0);
+  const voteStr = vote ? vote.toFixed(1) : "0.0";
 
-  let badgeHTML = `<div class="glass-logo">${logoHTML}</div>`;
+  let badgeHTML = `<span class="glass-text">${pIcon}</span>`;
   if (durationStr) badgeHTML += `<span class="glass-text">${durationStr}</span>`;
-  badgeHTML += `<span class="glass-text"><i class="bi bi-star-fill text-warning"></i> ${voteStr}</span>`;
+  if (vote) badgeHTML += `<span class="glass-text"><i class="bi bi-star-fill" style="color: #F5C518;"></i> ${voteStr}</span>`;
 
   return badgeHTML;
 };
@@ -251,10 +256,10 @@ export const renderContentsGrid = async (
       const linksBar = document.createElement("div");
       linksBar.className = "music-links-bar";
 
-      const createMusicLink = (url, iconClass) => {
+      const createMusicLink = (url, platformKey) => {
           const btn = document.createElement("div");
           btn.className = "music-link-btn";
-          btn.innerHTML = `<i class="bi ${iconClass}"></i>`;
+          btn.innerHTML = platformIcons[platformKey] || platformIcons.default;
           btn.style.cursor = "pointer";
           btn.addEventListener("click", (e) => {
               e.preventDefault();
@@ -264,9 +269,9 @@ export const renderContentsGrid = async (
           return btn;
       };
 
-      if (item.payload?.appleMusicUrl) linksBar.appendChild(createMusicLink(item.payload.appleMusicUrl, "bi-apple"));
-      if (item.payload?.spotifyUrl) linksBar.appendChild(createMusicLink(item.payload.spotifyUrl, "bi-spotify"));
-      if (item.payload?.amazonUrl) linksBar.appendChild(createMusicLink(item.payload.amazonUrl, "bi-amazon"));
+      if (item.payload?.appleMusicUrl) linksBar.appendChild(createMusicLink(item.payload.appleMusicUrl, "apple"));
+      if (item.payload?.spotifyUrl) linksBar.appendChild(createMusicLink(item.payload.spotifyUrl, "spotify"));
+      if (item.payload?.amazonUrl) linksBar.appendChild(createMusicLink(item.payload.amazonUrl, "amazon"));
       
       const musicInfoArea = document.createElement("div");
       musicInfoArea.className = "music-info-area";

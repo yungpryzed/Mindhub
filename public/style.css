@@ -806,28 +806,31 @@ body.is-dragging-global .smart-extract-zone.in-folder {
 }
 
 .movie-glass-badge {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(24, 24, 27, 0.85); 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  padding: 6px 14px;
-  opacity: 0; 
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 10;
-  white-space: nowrap;
-  pointer-events: none !important; 
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, -15px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    z-index: 10;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 6px 14px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
 }
 
 .movie-tile:hover .movie-glass-badge {
-  opacity: 1;
-  transform: translateX(-50%) translateY(2px);
+    transform: translate(-50%, 0);
+    opacity: 1;
 }
 
 .glass-logo {
@@ -836,15 +839,16 @@ body.is-dragging-global .smart-extract-zone.in-folder {
   justify-content: center;
 }
 
+/* Stile per i micro-elementi interni della pill del film */
 .glass-text {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
+.glass-text i { font-size: 13px; color: rgba(255,255,255,0.8); }
 
 .movie-title-overlay {
   position: absolute;
@@ -2037,35 +2041,47 @@ textarea, .movie-review-textarea {
   color: #fff;
 }
 
-/* Griglia Base: Allineamento a sinistra per bloccare l'espansione */
+/* Container Globale Dashboard a Scorrimento Orizzontale */
 #view-dashboard .dashboard-carousel {
-    display: grid;
-    justify-content: start;
-    overflow: visible;
-    padding: 4px 0 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 0 16px;
     width: 100%;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px; /* Gap di base */
 }
 
-/* 1. Film: Ultra compatti e vicini */
-#view-dashboard .dashboard-carousel:has(.movie-tile) {
-    grid-template-columns: repeat(auto-fill, 140px);
-    gap: 16px;
+/* Evita lo schiacciamento elastico degli elementi nel flex container */
+#view-dashboard .dashboard-carousel > * {
+    flex: 0 0 auto;
 }
-#view-dashboard .movie-tile { width: 140px !important; aspect-ratio: 2/3; height: auto !important; margin: 0; }
 
-/* 2. Musica: Piccoli quadrati */
-#view-dashboard .dashboard-carousel:has(.music-wrapper) {
-    grid-template-columns: repeat(auto-fill, 190px);
-    gap: 18px;
-}
-#view-dashboard .music-wrapper { width: 190px !important; margin: 0; }
-#view-dashboard .music-cover-box { border-radius: 12px; }
+/* Spaziature specifiche per tipo di elemento */
+#view-dashboard .dashboard-carousel:has(.music-wrapper) { gap: 18px; }
 
-/* 3. Pensieri: Rettangoli rigidi e compatti */
-#view-dashboard .dashboard-carousel:has(.note-card) {
-    grid-template-columns: repeat(auto-fill, 260px);
-    gap: 18px;
+/* Custom Scrollbar per il Carosello: Linea ultra-sottile e moderna */
+#view-dashboard .dashboard-carousel::-webkit-scrollbar {
+    height: 4px;
 }
+#view-dashboard .dashboard-carousel::-webkit-scrollbar-track {
+    background: transparent;
+}
+#view-dashboard .dashboard-carousel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+#view-dashboard .dashboard-carousel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix dimensioni card in Dashboard per Flexbox */
+#view-dashboard .movie-tile { width: 140px !important; margin: 0; }
+#view-dashboard .music-wrapper { width: 200px !important; margin: 0; }
+#view-dashboard .note-card { width: 260px !important; margin: 0; }
 
 /* --- Note Card Styling --- */
 .note-card {
