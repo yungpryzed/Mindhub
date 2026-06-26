@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="loginView" class="login-view">
+    <div id="loginView" class="login-view hidden">
       <form id="loginForm" class="card shadow-sm rounded-3 p-4 login-card">
         <h1 class="h6 fw-bold mb-3">Login</h1>
         <div class="mb-2">
@@ -60,7 +60,7 @@
         </div>
         <div id="sidebarTree"></div>
         
-        <button id="home-view-toggle">📁</button>
+        <button id="home-view-toggle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></button>
       </aside>
 
       <!-- CONTENUTO PRINCIPALE -->
@@ -88,31 +88,50 @@
           
           <!-- VISTA DASHBOARD -->
           <div id="view-dashboard" class="hidden">
-            <div class="dashboard-section mt-4">
+            <div class="dashboard-section mt-4" data-section-id="movies-section">
               <div class="dashboard-section-header">
-                <h4 class="text-white mb-0">Film Recenti</h4>
-                <a href="#" class="view-all-link">Vedi tutti -></a>
+                <div class="d-flex align-items-center gap-2">
+                  <h4 class="text-white mb-0">Film Recenti</h4>
+                </div>
+                <a href="#" class="view-all-link" data-target-folder="movie">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-movies" class="dashboard-carousel">
-                <!-- Griglia fissa -->
+              <div id="dash-movies" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+                <!-- Skeleton loader -->
+                <div class="skeleton-tile skeleton-movie"></div>
+                <div class="skeleton-tile skeleton-movie"></div>
+                <div class="skeleton-tile skeleton-movie"></div>
+                <div class="skeleton-tile skeleton-movie"></div>
+                <div class="skeleton-tile skeleton-movie"></div>
               </div>
             </div>
-            <div class="dashboard-section mt-4">
+            <div class="dashboard-section mt-4" data-section-id="music-section">
               <div class="dashboard-section-header">
-                <h4 class="text-white mb-0">Musica in Loop</h4>
-                <a href="#" class="view-all-link">Vedi tutti -></a>
+                <div class="d-flex align-items-center gap-2">
+                  <h4 class="text-white mb-0">Musica in Loop</h4>
+                </div>
+                <a href="#" class="view-all-link" data-target-folder="album">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-music" class="dashboard-carousel">
-                <!-- Griglia fissa -->
+              <div id="dash-music" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+                <!-- Skeleton loader -->
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
               </div>
             </div>
-            <div class="dashboard-section mt-4">
+            <div class="dashboard-section mt-4" data-section-id="notes-section">
               <div class="dashboard-section-header">
-                <h4 class="text-white mb-0">Ultimi Pensieri</h4>
-                <a href="#" class="view-all-link">Vedi tutti -></a>
+                <div class="d-flex align-items-center gap-2">
+                  <h4 class="text-white mb-0">Ultimi Pensieri</h4>
+                </div>
+                <a href="#" class="view-all-link" data-target-folder="note">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-notes" class="dashboard-carousel">
-                <!-- Griglia fissa -->
+              <div id="dash-notes" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+                <!-- Skeleton loader -->
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
+                <div class="skeleton-tile skeleton-standard"></div>
               </div>
             </div>
           </div>
@@ -206,28 +225,20 @@
     </div>
 
     <div id="noteView" class="note-view hidden">
-      <div class="container py-4">
-        <div class="note-card">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <button
-              id="noteBackBtn"
-              class="btn btn-outline-dark btn-sm back-arrow"
-              aria-label="Torna ai contenuti"
-            ></button>
-            <span id="noteStatus" class="save-status"></span>
-          </div>
-          <h1 class="note-heading">Pensieri</h1>
-          <div class="title-group mb-3">
-            <span id="noteStatus" class="save-status"></span>
-            <input
-              id="noteTitle"
-              type="text"
-              class="form-control form-control-lg note-title"
-              placeholder="Titolo nota"
-            />
-          </div>
-          <div id="noteEditor" class="note-editor"></div>
-        </div>
+      <div class="note-topbar">
+        <button id="noteBackBtn" class="btn-back" aria-label="Torna ai contenuti">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        </button>
+        <span id="noteStatus" class="save-status"></span>
+      </div>
+      <div class="note-page-content">
+        <input
+          id="noteTitle"
+          type="text"
+          class="notion-title-input"
+          placeholder="Titolo nota"
+        />
+        <div id="noteEditor" class="note-editor"></div>
       </div>
     </div>
 

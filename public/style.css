@@ -1996,19 +1996,38 @@ textarea, .movie-review-textarea {
 /* --- View Switcher --- */
 #home-view-toggle {
   position: absolute;
-  bottom: 20px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: rgba(24, 24, 27, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  opacity: 0.4;
-  transition: opacity 0.2s ease;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+#home-view-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 #home-view-toggle:hover {
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transform: translateX(-50%) scale(1.05);
 }
 
 .hidden {
@@ -2035,10 +2054,23 @@ textarea, .movie-review-textarea {
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.view-all-link svg {
+  width: 1.1em;
+  height: 1.1em;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .view-all-link:hover {
   color: #fff;
+}
+
+.view-all-link:hover svg {
+  transform: translateX(4px);
 }
 
 /* Container Globale Dashboard a Scorrimento Orizzontale */
@@ -2159,4 +2191,240 @@ textarea, .movie-review-textarea {
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.7);
     font-weight: 500;
+}
+
+/* --- Dashboard Drag & Drop --- */
+.drag-handle {
+  cursor: grab;
+  opacity: 0.1;
+  transition: opacity 0.2s ease, color 0.2s;
+}
+.dashboard-section-header:hover .drag-handle {
+  opacity: 1;
+}
+.drag-handle:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.dashboard-section {
+  transition: opacity 0.2s, transform 0.2s;
+}
+.dashboard-section.is-dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   SKELETON LOADERS
+   ========================================================================== */
+@keyframes skeleton-pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.1; }
+  100% { opacity: 0.3; }
+}
+
+.skeleton-tile {
+  background: var(--surface-2);
+  border-radius: 14px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.skeleton-movie {
+  width: 160px;
+  height: 240px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.skeleton-standard {
+  width: 250px;
+  height: 250px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   DESIGN NOTE PREMIUM (NOTION STYLE)
+   ========================================================================== */
+.note-topbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: transparent;
+  z-index: 50;
+}
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: rgba(161, 161, 170, 0.15);
+  color: #ffffff;
+}
+
+.note-page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notion-title-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-pure);
+  width: 100%;
+  padding: 0;
+  margin-bottom: 24px;
+}
+
+.notion-title-input::placeholder {
+  color: #525252;
+}
+
+/* Styling the Quill Toolbar to match the premium dark theme */
+.note-view .ql-toolbar.ql-snow {
+  border: none !important;
+  background: transparent;
+  padding: 8px 0 !important;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-dark) !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-formats {
+  margin-right: 8px !important;
+  display: flex;
+  align-items: center;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid var(--border-darkest);
+}
+
+.note-view .ql-toolbar.ql-snow button {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px !important;
+}
+
+.note-view .ql-toolbar.ql-snow button:hover {
+  background: var(--surface-hover) !important;
+}
+
+.note-view .ql-toolbar.ql-snow button.ql-active {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Coloring the SVG icons inside Quill buttons */
+.note-view .ql-toolbar.ql-snow .ql-stroke {
+  stroke: var(--text-icons) !important;
+  transition: stroke 0.2s ease;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-fill {
+  fill: var(--text-icons) !important;
+  transition: fill 0.2s ease;
+}
+
+.note-view .ql-toolbar.ql-snow button:hover .ql-stroke,
+.note-view .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+  stroke: var(--text-pure) !important;
+}
+
+.note-view .ql-toolbar.ql-snow button:hover .ql-fill,
+.note-view .ql-toolbar.ql-snow button.ql-active .ql-fill {
+  fill: var(--text-pure) !important;
+}
+
+/* Dropdown styling for headings */
+.note-view .ql-toolbar.ql-snow .ql-picker {
+  color: var(--text-icons) !important;
+  height: 32px !important;
+  line-height: 32px;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-label {
+  border: none !important;
+  padding-left: 8px !important;
+  padding-right: 24px !important;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-label:hover {
+  color: var(--text-pure) !important;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-label .ql-stroke {
+  stroke: var(--text-icons) !important;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-label:hover .ql-stroke,
+.note-view .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-stroke {
+  stroke: var(--text-pure) !important;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-options {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-dark) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  padding: 8px !important;
+  margin-top: 4px;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-item {
+  color: var(--text-icons) !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease;
+}
+
+.note-view .ql-toolbar.ql-snow .ql-picker-item:hover,
+.note-view .ql-toolbar.ql-snow .ql-picker-item.ql-selected {
+  background: var(--surface-hover) !important;
+  color: var(--text-pure) !important;
+}
+
+.note-view .ql-container.ql-snow {
+  border: none !important;
+  background: transparent !important;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.note-view .ql-editor {
+  padding: 0;
 }
