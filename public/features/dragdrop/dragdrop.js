@@ -204,6 +204,9 @@ export const attachDragHandlers = (
   tile.addEventListener("drop", async (event) => {
     event.preventDefault();
 
+    const isDashboardVisible = !document.getElementById("view-dashboard")?.classList.contains("hidden");
+    if (isDashboardVisible && !event.target.closest(".dashboard-section")) return;
+
     const dashboardTile = resolveDashboardTile(event);
     const targetItem = item;
     const activeTiles = getActiveDragTiles(contentGrid);

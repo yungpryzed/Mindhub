@@ -22,6 +22,11 @@ export const initLassoSelection = ({ mainContent, contentGrid }) => {
       e.target.closest('.fixed-nav-controls')
     ) return;
 
+    const viewDashboard = document.getElementById("view-dashboard");
+    if (viewDashboard && !viewDashboard.classList.contains("hidden")) {
+      return;
+    }
+
     isLassoing = true;
     startX = e.clientX;
     startY = e.clientY;
