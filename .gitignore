@@ -5,3 +5,6 @@ node_modules/
 .cursor/
 .replit
 .history/
+.claude/
+.gemini/
+.codex/
