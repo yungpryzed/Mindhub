@@ -78,11 +78,17 @@ const goBack = (loadContentsFn) => {
       currentParentConstraint: previous?.constraint || null,
     });
     loadContentsFn();
+    
+    if (previous?.fromDashboard && window.setHomeView) {
+      window.setHomeView("dashboard", true);
+    }
     return true;
   }
 
   return false;
 };
+
+export let loadFolderDirectly = null;
 
 export const initApp = () => {
   // Holder object per permettere l'auto-riferimento funzionale
@@ -95,6 +101,14 @@ export const initApp = () => {
     notes.initNotes({ dom, updateContent: api.updateContent, showNote: ui.showNote });
     todos.initTodos({ dom, updateContent: api.updateContent, showTodo: ui.showTodo });
     recipes.initRecipes({ dom, showRecipe: ui.showRecipe });
+
+    loadFolderDirectly = (folderId, fromDashboard = false) => {
+      if (folderId && folderId !== state.currentParentId) {
+        pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint, fromDashboard });
+        setState({ currentParentId: folderId, currentParentConstraint: null });
+        loadFn.current();
+      }
+    };
 
     loadFn.current = async () => {
       ui.hideCreateForm();
@@ -210,7 +224,7 @@ export const initApp = () => {
         // --- DASHBOARD POPULATION ---
         if (allUserContents && allUserContents.length > 0) {
           const recentMovies = allUserContents.filter(i => i.type === 'movie').slice(0, 10);
-          const loopMusic = allUserContents.filter(i => i.type === 'music').slice(0, 5);
+          const loopMusic = allUserContents.filter(i => i.type === 'music').slice(0, 10);
           const latestNotes = allUserContents.filter(i => i.type === 'note').slice(0, 10);
 
           if (dom.dashMovies) await contentsView.renderContentsGrid(recentMovies, { ...baseRenderOpts, targetContainer: dom.dashMovies, skipGridFormatting: true });
