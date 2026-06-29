@@ -57,35 +57,48 @@ const runMovieSearch = async (query) => {
       const year = movie.release_date ? `(${movie.release_date.slice(0, 4)})` : "";
       const item = document.createElement("button");
       item.type = "button";
-      item.className = "list-group-item list-group-item-action";
-      item.textContent = `${movie.title} ${year}`.trim();
+      item.className = "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+      
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "text-truncate";
+      titleSpan.textContent = `${movie.title} ${year}`.trim();
+
+      const badgeContainer = document.createElement("div");
+      badgeContainer.className = "d-flex gap-2 align-items-center flex-shrink-0";
+      
+      const mediaTypeBadge = document.createElement("span");
+      mediaTypeBadge.className = "glass-text";
+      mediaTypeBadge.style.fontSize = "0.65rem";
+      mediaTypeBadge.style.padding = "0.2rem 0.4rem";
+      mediaTypeBadge.textContent = movie.media_type === 'tv' ? "Serie TV / Anime" : "Film";
+      
+      const ratingBadge = document.createElement("span");
+      ratingBadge.className = "glass-text";
+      ratingBadge.style.fontSize = "0.65rem";
+      ratingBadge.style.padding = "0.2rem 0.4rem";
+      ratingBadge.innerHTML = `<i class="bi bi-star-fill" style="color: #F5C518;"></i> ${movie.rating ? movie.rating.toFixed(1) : "0.0"}`;
+      
+      badgeContainer.appendChild(mediaTypeBadge);
+      badgeContainer.appendChild(ratingBadge);
+      
+      item.appendChild(titleSpan);
+      item.appendChild(badgeContainer);
       
       item.addEventListener("click", () => {
-        // --- LOGICA REALE PER LE NUOVE FEATURE (Piattaforme e Durata) ---
-        const availablePlatforms = ['netflix', 'prime', 'disney', 'apple'];
-        
-        // Genera da 1 a 2 piattaforme casuali dall'elenco per il mock iniziale
-        const randomPlatforms = availablePlatforms
-          .sort(() => 0.5 - Math.random())
-          .slice(0, Math.floor(Math.random() * 2) + 1);
-        
-        // Genera una durata realistica tra 95 e 165 minuti
-        const randomRuntime = Math.floor(Math.random() * (165 - 95 + 1)) + 95;
-
         const payload = {
           tmdb_id: movie.id,
           title: movie.title,
+          media_type: movie.media_type,
           overview: movie.overview,
           release_date: movie.release_date,
           
-          // FIX COPERTINE: Trasforma il path parziale (/abc.jpg) in un URL assoluto funzionante al 100%
           poster_path: movie.poster_path 
             ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
             : "https://via.placeholder.com/500x750?text=No+Poster",
             
-          vote_average: movie.vote_average,
-          runtime: randomRuntime,       // Nuova proprietà inserita nel JSONB
-          platforms: randomPlatforms    // Nuova proprietà inserita nel JSONB
+          vote_average: movie.rating,
+          runtime: movie.duration,
+          platforms: movie.platforms
         };
         
         createMovieContent(payload, movie.title || "");

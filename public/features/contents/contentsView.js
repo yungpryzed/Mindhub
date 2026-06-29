@@ -140,7 +140,23 @@ export const renderFolderPreview = (container, items) => {
 
 const buildMovieBadgeHTML = (item) => {
   const platforms = item?.payload?.platforms || [];
-  const primaryPlatform = item?.payload?.platform || platforms[0] || "netflix";
+  let primaryPlatform = item?.payload?.platform;
+  
+  if (!primaryPlatform && platforms.length > 0) {
+    let p = platforms[0];
+    if (typeof p === 'object' && p.provider_name) {
+      const name = p.provider_name.toLowerCase();
+      if (name.includes('netflix')) primaryPlatform = 'netflix';
+      else if (name.includes('prime') || name.includes('amazon')) primaryPlatform = 'prime';
+      else if (name.includes('disney')) primaryPlatform = 'disney';
+      else if (name.includes('apple')) primaryPlatform = 'apple';
+      else primaryPlatform = 'default';
+    } else if (typeof p === 'string') {
+      primaryPlatform = p.toLowerCase();
+    }
+  }
+  
+  if (!primaryPlatform) primaryPlatform = 'default';
   const pIcon = platformIcons[primaryPlatform] || platformIcons.default;
   
   const runtime = Number(item?.payload?.runtime || 0);

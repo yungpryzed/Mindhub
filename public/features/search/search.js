@@ -100,8 +100,19 @@ const renderResults = (results, { dom, onResultClick }) => {
 
     let visualHTML = '';
     const posterPath = item.payload?.poster_path;
+    const mediaType = item.payload?.media_type || 'movie';
+
     if (item.type === 'movie' && posterPath) {
-        visualHTML = `<img src="https://image.tmdb.org/t/p/w92${posterPath}" alt="poster" class="search-result-thumb">`;
+        let badgeText = mediaType === 'tv' ? "Serie TV / Anime" : "Film";
+        let rating = item.payload?.vote_average ? Number(item.payload.vote_average).toFixed(1) : "0.0";
+        visualHTML = `
+          <div class="position-relative d-inline-block">
+            <img src="https://image.tmdb.org/t/p/w92${posterPath}" alt="poster" class="search-result-thumb">
+            <div class="position-absolute d-flex flex-column gap-1" style="top: 4px; right: -12px;">
+              <span class="glass-text" style="font-size: 0.55rem; padding: 0.2rem 0.4rem; white-space: nowrap;">${badgeText}</span>
+              <span class="glass-text" style="font-size: 0.55rem; padding: 0.2rem 0.4rem; white-space: nowrap;"><i class="bi bi-star-fill" style="color: #F5C518;"></i> ${rating}</span>
+            </div>
+          </div>`;
     } else {
         visualHTML = `<div class="result-icon-wrapper"><i class="bi ${getIconForType(item.type)} result-item-icon"></i></div>`;
     }
@@ -125,6 +136,7 @@ const renderResults = (results, { dom, onResultClick }) => {
 
 export const initSearch = ({ dom, onResultClick, getCurrentContents }) => {
   if (!dom || !dom.searchInput || !dom.searchResults) return;
+  dom.searchInput.placeholder = "Cerca note, film, serie TV, cartelle... (Ctrl+K)";
 
   let selectedIndex = -1;
 
