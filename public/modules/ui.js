@@ -1,7 +1,6 @@
 import { dom } from "../core/dom.js";
+import { PERMISSION_MATRIX } from "../core/state.js";
 import { apiFetch } from "../core/api.js";
-
-const createTypeOrder = ["box", "note", "todo_list", "movie", "music", "recipe"];
 
 export const setCreateError = (message) => {
   dom.createError.textContent = message || "";
@@ -87,17 +86,32 @@ export const setActiveCreateType = (type) => {
 };
 
 export const applyCreateTypeRules = ({
-  currentParentConstraint,
+  currentParentConstraint, // può essere ignorato se passiamo activeFolder, ma lo manteniamo per retrocompatibilità
+  activeFolder,
   currentCreateType,
   onTypeChange,
 }) => {
-  const allowedTypes = currentParentConstraint
-    ? Array.from(new Set(["box", currentParentConstraint]))
-    : createTypeOrder.slice();
+  let activeFolderType = "root";
+  if (activeFolder) {
+     activeFolderType = activeFolder.payload?.allowed_type || activeFolder.payload?.content_type || activeFolder.type || "note";
+     if (activeFolderType === "box" && currentParentConstraint) {
+         activeFolderType = currentParentConstraint; // fallback on constraint if type is just box
+     }
+     
+     // Normalizzazione
+     const t = activeFolderType.toLowerCase();
+     if (['notes', 'pensieri', 'pensiero', 'nota'].includes(t)) activeFolderType = 'note';
+     else if (['todo', 'lista'].includes(t)) activeFolderType = 'todo_list';
+     else if (['film', 'movies'].includes(t)) activeFolderType = 'movie';
+     else if (['music', 'musica', 'album', 'canzone', 'canzoni'].includes(t)) activeFolderType = 'music';
+  }
+
+  const allowedTypes = PERMISSION_MATRIX[activeFolderType] || PERMISSION_MATRIX.root;
 
   dom.createTypeButtons.forEach((btn) => {
     const isAllowed = allowedTypes.includes(btn.dataset.type);
     btn.classList.toggle("is-hidden", !isAllowed);
+    btn.classList.toggle("d-none", !isAllowed);
   });
 
   const nextType = allowedTypes.includes(currentCreateType)
