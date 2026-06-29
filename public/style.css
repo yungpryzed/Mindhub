@@ -51,21 +51,31 @@ body {
 }
 
 /* ==========================================================================
-   2. SCROLLBAR GLOBALE PREMIUM
+   2. SCROLLBAR GLOBALE PREMIUM (GLASSMORPHISM UNIVERSALE)
    ========================================================================== */
-::-webkit-scrollbar {
-  width: 8px;  
-  height: 8px; 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(0, 0, 0, 0.2);
 }
-::-webkit-scrollbar-track {
-  background: var(--dash); 
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-::-webkit-scrollbar-thumb {
-  background: var(--surface-2); 
-  border-radius: 4px;
+
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-base); 
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Crea uno stacco dal track */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* ==========================================================================
@@ -271,19 +281,7 @@ body {
   flex-grow: 1;
 }
 
-.dashboard::-webkit-scrollbar {
-  width: 8px;
-}
-.dashboard::-webkit-scrollbar-track {
-  background: var(--dash); 
-}
-.dashboard::-webkit-scrollbar-thumb {
-  background: var(--surface-2); 
-  border-radius: 4px;
-}
-.dashboard::-webkit-scrollbar-thumb:hover {
-  background: var(--border-base); 
-}
+
 
 /* ==========================================================================
    4.X DASHBOARD CAROUSELS (SCROLLBAR PREMIUM)
@@ -296,23 +294,7 @@ body {
   scrollbar-width: thin;
 }
 
-.dashboard-carousel::-webkit-scrollbar {
-  height: 5px;
-}
 
-.dashboard-carousel::-webkit-scrollbar-track {
-  background: var(--dash);
-  border-radius: 10px;
-}
-
-.dashboard-carousel::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
-  border-radius: 10px;
-}
-
-.dashboard-carousel::-webkit-scrollbar-thumb:hover {
-  background: var(--border-base);
-}
 
 /* ==========================================================================
    4.1 SIDEBAR DRAWER & NAV CONTROLS (visionOS Style)
@@ -410,16 +392,7 @@ body {
   transform: translateX(0);
 }
 
-.sidebar-drawer::-webkit-scrollbar {
-  width: 4px;
-}
-.sidebar-drawer::-webkit-scrollbar-track {
-  background: transparent;
-}
-.sidebar-drawer::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-}
+
 
 .main-content {
   flex-grow: 1;
@@ -582,19 +555,7 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-#movieResults::-webkit-scrollbar {
-  width: 6px;
-}
-#movieResults::-webkit-scrollbar-track {
-  background: transparent;
-}
-#movieResults::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-}
-#movieResults::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
+
 
 #movieResults .list-group-item {
   background: transparent !important;
@@ -2286,21 +2247,6 @@ textarea, .movie-review-textarea {
 
 /* Spaziature specifiche per tipo di elemento */
 #view-dashboard .dashboard-carousel:has(.music-wrapper) { gap: 18px; }
-
-/* Custom Scrollbar per il Carosello: Linea ultra-sottile e moderna */
-#view-dashboard .dashboard-carousel::-webkit-scrollbar {
-    height: 4px;
-}
-#view-dashboard .dashboard-carousel::-webkit-scrollbar-track {
-    background: transparent;
-}
-#view-dashboard .dashboard-carousel::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-}
-#view-dashboard .dashboard-carousel::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
 
 /* Fix dimensioni card in Dashboard per Flexbox */
 #view-dashboard .movie-tile { width: 140px !important; margin: 0; }
