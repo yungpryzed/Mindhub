@@ -10,7 +10,7 @@ class TmdbController {
     }
 
     try {
-      const results = await tmdbService.searchMovies(query);
+      const results = await tmdbService.searchMulti(query);
       return res.status(200).json({ results });
     } catch (error) {
       if (error.message === "TMDB_API_KEY_MISSING") {
