@@ -35,7 +35,7 @@ class contentService {
 
   static async getFolders(userId) {
     const result = await pool.query(
-      "SELECT id, title, parent_id, type, created_at, updated_at FROM contents WHERE user_id = $1 AND type = 'box' ORDER BY title ASC",
+      "SELECT id, title, parent_id, type, payload, created_at, updated_at FROM contents WHERE user_id = $1 AND type = 'box' ORDER BY title ASC",
       [userId]
     );
     

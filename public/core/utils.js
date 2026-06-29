@@ -13,6 +13,9 @@ export const normalizeCreateType = (value) => {
   if (["recipe", "recipes", "ricetta", "ricette"].includes(raw)) {
     return "recipe";
   }
+  if (["music", "musica", "album", "canzone", "canzoni"].includes(raw)) {
+    return "music";
+  }
   return null;
 };
 
@@ -27,5 +30,6 @@ export const deriveConstraintFromBox = (item) => {
   if (/(pensier|note|nota)/.test(title)) return "note";
   if (/(todo|to-do|task|lista)/.test(title)) return "todo_list";
   if (/(ricett|recipe|cucin)/.test(title)) return "recipe";
+  if (/(music|album|canzon)/.test(title)) return "music";
   return null;
 };

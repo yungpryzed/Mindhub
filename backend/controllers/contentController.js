@@ -1,5 +1,14 @@
-const contentService = require("../services/contentService"); // Already lowercase, no change needed
+const contentService = require("../services/contentService");
 const pool = require("../config/db");
+
+const PERMISSION_MATRIX = {
+  movie: ["movie", "box"],
+  music: ["music", "box"],
+  note: ["note", "todo_list", "recipe", "box"],
+  todo_list: ["todo_list", "note", "box"],
+  recipe: ["recipe", "note", "box"],
+  root: ["note", "todo_list", "recipe", "movie", "music", "box"]
+};
 
 class contentController {
   static async getAllUserContents(req, res) {
@@ -22,8 +31,39 @@ class contentController {
       const userId = req.user?.userId;
       if (!userId) return res.status(401).json({ message: "Utente non autenticato." });
 
-      const { type, title } = req.body;
+      const { type, title, parent_id } = req.body;
       if (!type || !title) return res.status(400).json({ message: "type e title sono obbligatori." });
+
+      // Validazione Whitelist (Backend Guard)
+      const allowedBaseTypes = ["note", "todo_list", "recipe", "movie", "music", "box"];
+      if (!allowedBaseTypes.includes(type)) {
+        console.warn(`[SECURITY ANOMALY] Tentativo di creazione con tipo non valido: ${type} dall'utente ${userId}`);
+        return res.status(403).json({ message: "Tipo di contenuto non consentito." });
+      }
+
+      let activeFolderType = "root";
+      if (parent_id) {
+         const parentQuery = await pool.query("SELECT * FROM contents WHERE id = $1 AND user_id = $2", [parent_id, userId]);
+         if (parentQuery.rows.length === 0) {
+            return res.status(404).json({ message: "Cartella di destinazione non trovata." });
+         }
+         const parent = parentQuery.rows[0];
+         if (parent.type !== "box") {
+            console.warn(`[SECURITY ANOMALY] Tentativo di inserimento in un non-box dall'utente ${userId}`);
+            return res.status(403).json({ message: "Il parent specificato non è una cartella valida." });
+         }
+         
+         activeFolderType = parent.payload?.allowed_type || parent.payload?.content_type || "note";
+         if (['notes', 'pensieri', 'pensiero', 'nota'].includes(activeFolderType.toLowerCase())) {
+            activeFolderType = 'note';
+         }
+      }
+
+      const allowedForFolder = PERMISSION_MATRIX[activeFolderType] || PERMISSION_MATRIX.root;
+      if (!allowedForFolder.includes(type)) {
+         console.warn(`[SECURITY ANOMALY] Violazione vincolo tipologia: tentata creazione di '${type}' in cartella '${activeFolderType}' (User: ${userId})`);
+         return res.status(403).json({ message: `Violazione permessi: impossibile creare '${type}' in questo contesto.` });
+      }
 
       const content = await contentService.createContent(userId, req.body);
       return res.status(201).json(content);

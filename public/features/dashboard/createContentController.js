@@ -13,6 +13,19 @@ export const initCreateContentController = (loadContents) => {
     if (reviewModal && reviewModal.parentNode) {
       reviewModal.parentNode.removeChild(reviewModal);
     }
+    
+    if (dom.createTypeButtons) {
+      ui.applyCreateTypeRules({
+        currentParentConstraint: state.currentParentConstraint,
+        activeFolder: state.activeFolder,
+        currentCreateType: state.currentCreateType,
+        onTypeChange: (nextType) => {
+          setState({ currentCreateType: nextType });
+          ui.setActiveCreateType(nextType);
+        }
+      });
+    }
+
     dom.createForm.classList.toggle("d-none");
   });
 

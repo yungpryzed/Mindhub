@@ -20,10 +20,11 @@ const handleItemClick = (item, loadContentsFn) => {
   ui.hideCreateForm();
 
   if (item.type === "box") {
-    pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint });
+    pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint, activeFolder: state.activeFolder });
     setState({
       currentParentId: item.id,
       currentParentConstraint: deriveConstraintFromBox(item),
+      activeFolder: item
     });
     loadContentsFn();
     return;
@@ -76,6 +77,7 @@ const goBack = (loadContentsFn) => {
     setState({
       currentParentId: previous?.parentId || "root",
       currentParentConstraint: previous?.constraint || null,
+      activeFolder: previous?.activeFolder || null,
     });
     loadContentsFn();
     
@@ -104,8 +106,10 @@ export const initApp = () => {
 
     loadFolderDirectly = (folderId, fromDashboard = false) => {
       if (folderId && folderId !== state.currentParentId) {
-        pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint, fromDashboard });
-        setState({ currentParentId: folderId, currentParentConstraint: null });
+        pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint, activeFolder: state.activeFolder, fromDashboard });
+        // Quando ricarichiamo una cartella dalla history del dashboard, resetta activeFolder a null finchè non viene riletta (oppure assumiamo null se root)
+        // Siccome loadFolderDirectly non ha l'item completo, impostiamo activeFolder a null per sicurezza o lo ignoriamo qui.
+        setState({ currentParentId: folderId, currentParentConstraint: null, activeFolder: null });
         loadFn.current();
       }
     };
@@ -115,6 +119,7 @@ export const initApp = () => {
       ui.updateBackButton(state.currentParentId);
       ui.applyCreateTypeRules({
         currentParentConstraint: state.currentParentConstraint,
+        activeFolder: state.activeFolder,
         currentCreateType: state.currentCreateType,
         onTypeChange: (nextType) => {
           setState({ currentCreateType: nextType });
@@ -129,7 +134,29 @@ export const initApp = () => {
           api.fetchAllContents(),
         ]);
 
-        setState({ allUserContents: allUserContents || [] });
+        setState({ allUserContents: allUserContents || [], allFolders: allFolders });
+        
+        // Recupero activeFolder se null ma siamo dentro una cartella (es. click da Dashboard "Vedi tutti")
+        if (!state.activeFolder && state.currentParentId !== "root") {
+           const foundFolder = allFolders.find(f => String(f.id) === String(state.currentParentId));
+           if (foundFolder) {
+              setState({
+                 activeFolder: foundFolder,
+                 currentParentConstraint: deriveConstraintFromBox(foundFolder)
+              });
+              // Riapplica le regole di UI per il Create Modal dato che lo stato è cambiato
+              ui.applyCreateTypeRules({
+                 currentParentConstraint: state.currentParentConstraint,
+                 activeFolder: state.activeFolder,
+                 currentCreateType: state.currentCreateType,
+                 onTypeChange: (nextType) => {
+                   setState({ currentCreateType: nextType });
+                   ui.setActiveCreateType(nextType);
+                 }
+              });
+           }
+        }
+
         contentsView.renderSidebarTree(allFolders, state.currentParentId);
 
         if (!Array.isArray(data)) {
@@ -365,8 +392,8 @@ export const initApp = () => {
         if (!dropzone) return;
         const folderId = dropzone.dataset.folderId;
         if (folderId && folderId !== state.currentParentId) {
-          pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint });
-          setState({ currentParentId: folderId, currentParentConstraint: null });
+          pushHistory({ parentId: state.currentParentId, constraint: state.currentParentConstraint, activeFolder: state.activeFolder });
+          setState({ currentParentId: folderId, currentParentConstraint: null, activeFolder: null });
           loadFn.current();
         }
       });
