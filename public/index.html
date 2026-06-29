@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MindHub</title>
+    <link rel="icon" type="image/svg+xml" href="assets/mindhublogo.svg" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -22,19 +23,48 @@
   </head>
   <body>
     <div id="loginView" class="login-view hidden">
-      <form id="loginForm" class="card shadow-sm rounded-3 p-4 login-card">
-        <h1 class="h6 fw-bold mb-3">Login</h1>
-        <div class="mb-2">
-          <label class="form-label small text-secondary">Email</label>
-          <input id="loginEmail" type="email" class="form-control" placeholder="test@example.com" />
+      <div class="login-container">
+        <div class="login-header">
+          <div class="login-logo-placeholder">
+            <img src="assets/mindhublogo.svg" alt="MindHub" class="login-logo-icon" />
+          </div>
+          <div class="login-brand">
+            <span class="brand-name">MindHub</span>
+            <span class="brand-tagline">Il tuo spazio personale</span>
+          </div>
         </div>
-        <div class="mb-2">
-          <label class="form-label small text-secondary">Password</label>
-          <input id="loginPassword" type="password" class="form-control" placeholder="Password123" />
+
+        <div class="login-hero-text">
+          <h1 class="login-title">Bentornato</h1>
+          <p class="login-subtitle">Accedi per entrare nel tuo hub.</p>
         </div>
-        <button id="loginBtn" type="submit" class="btn btn-dark w-100 mt-2">Accedi</button>
-        <div id="loginError" class="text-danger small mt-2"></div>
-      </form>
+
+        <form id="loginForm" class="login-form">
+          <div class="input-group-custom">
+            <label class="input-label">Email</label>
+            <div class="input-wrapper">
+              <i class="bi bi-envelope input-icon-left"></i>
+              <input id="loginEmail" type="email" class="input-field" placeholder="test@example.com" autocomplete="email" required />
+            </div>
+          </div>
+
+          <div class="input-group-custom">
+            <label class="input-label">Password</label>
+            <div class="input-wrapper">
+              <i class="bi bi-lock input-icon-left"></i>
+              <input id="loginPassword" type="password" class="input-field" placeholder="••••••••" autocomplete="current-password" required />
+              <i class="bi bi-eye input-icon-right" id="togglePasswordVisibility" style="cursor: pointer;"></i>
+            </div>
+          </div>
+
+          <button id="loginBtn" type="submit" class="login-submit-btn">
+            <span>Accedi</span>
+            <i class="bi bi-arrow-right"></i>
+          </button>
+          
+          <div id="loginError" class="login-error-msg"></div>
+        </form>
+      </div>
     </div>
 
     <div id="dashboardView" class="dashboard hidden">
@@ -55,8 +85,9 @@
 
       <!-- SIDEBAR A SCOMPARSA (VS CODE TREE VIEW) -->
       <aside id="sidebarDrawer" class="sidebar-drawer">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Libreria</h2>
+        <div class="sidebar-header d-flex align-items-center gap-2 mb-3 px-3">
+          <img src="assets/mindhublogo.svg" alt="MindHub" style="width: 24px; height: 24px;" />
+          <h2 class="sidebar-title mb-0">MindHub</h2>
         </div>
         <div id="sidebarTree"></div>
         
@@ -95,7 +126,7 @@
                 </div>
                 <a href="#" class="view-all-link" data-target-folder="movie">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-movies" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+              <div id="dash-movies" class="dashboard-carousel" style="display: flex; gap: 1.5rem;">
                 <!-- Skeleton loader -->
                 <div class="skeleton-tile skeleton-movie"></div>
                 <div class="skeleton-tile skeleton-movie"></div>
@@ -111,7 +142,7 @@
                 </div>
                 <a href="#" class="view-all-link" data-target-folder="album">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-music" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+              <div id="dash-music" class="dashboard-carousel" style="display: flex; gap: 1.5rem;">
                 <!-- Skeleton loader -->
                 <div class="skeleton-tile skeleton-standard"></div>
                 <div class="skeleton-tile skeleton-standard"></div>
@@ -126,7 +157,7 @@
                 </div>
                 <a href="#" class="view-all-link" data-target-folder="note">Vedi tutti <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
               </div>
-              <div id="dash-notes" class="dashboard-carousel" style="display: flex; gap: 1.5rem; overflow: hidden;">
+              <div id="dash-notes" class="dashboard-carousel" style="display: flex; gap: 1.5rem;">
                 <!-- Skeleton loader -->
                 <div class="skeleton-tile skeleton-standard"></div>
                 <div class="skeleton-tile skeleton-standard"></div>

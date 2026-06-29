@@ -177,6 +177,221 @@ const buildMovieBadgeHTML = (item) => {
   return badgeHTML;
 };
 
+const createBaseTile = (item, handlers) => {
+  const tile = document.createElement("div");
+  tile.className = "content-tile";
+  tile.dataset.type = item.type;
+  tile.dataset.id = item.id;
+  tile.setAttribute("draggable", "true");
+  tile.style.gridColumn = "auto";
+  tile.style.gridColumnStart = "auto";
+  tile.style.justifySelf = "auto";
+
+  tile.addEventListener("click", (event) => {
+    if (event.ctrlKey || event.metaKey) {
+      event.stopPropagation();
+      tile.classList.toggle("is-selected");
+      return;
+    }
+    
+    // FIX: Se è una card musicale, annulla il click per evitare il dump del JSON di debug
+    if (item.type === 'music') {
+      return;
+    }
+    
+    handlers.onTileClick(item);
+  });
+
+  tile.addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    handlers.onContextMenu(item, event);
+  });
+
+  handlers.onTileReady(tile, item);
+
+  return tile;
+};
+
+const renderBoxTile = (item, handlers) => {
+  const tile = createBaseTile(item, handlers);
+  tile.classList.add("folder-tile");
+
+  const title = document.createElement("div");
+  title.className = "content-title";
+  title.textContent = item.title || "(senza titolo)";
+
+  const folderBody = document.createElement("div");
+  folderBody.className = "folder-body";
+
+  const folderIcon = document.createElement("i");
+  folderIcon.className = `bi ${typeIcons.box} folder-icon`;
+  folderBody.appendChild(folderIcon);
+
+  const preview = document.createElement("div");
+  preview.className = "folder-preview-grid";
+  folderBody.appendChild(preview);
+
+  tile.appendChild(folderBody);
+  tile.appendChild(title);
+
+  handlers.fetchFolderPreview(item.id)
+    .then((previewItems) => renderFolderPreview(preview, previewItems))
+    .catch(() => renderFolderPreview(preview, []));
+
+  return tile;
+};
+
+const renderMovieTile = (item, handlers) => {
+  const tile = createBaseTile(item, handlers);
+  tile.classList.add("movie-tile");
+
+  const title = document.createElement("div");
+  title.className = "content-title movie-title";
+  title.textContent = item.title || "(senza titolo)";
+
+  const posterPath = item?.payload?.poster_path || "";
+  if (posterPath) {
+    const fullPosterUrl = posterPath.startsWith("http") ? posterPath : `https://image.tmdb.org/t/p/w500${posterPath}`;
+    tile.style.backgroundImage = `url(${fullPosterUrl})`;
+    tile.style.backgroundSize = "cover";
+    tile.style.backgroundPosition = "center";
+  }
+
+  const glassBadge = document.createElement("div");
+  glassBadge.className = "movie-glass-badge";
+  glassBadge.innerHTML = buildMovieBadgeHTML(item);
+  tile.appendChild(glassBadge);
+
+  const titleOverlay = document.createElement("div");
+  titleOverlay.className = "movie-title-overlay";
+  titleOverlay.appendChild(title);
+  tile.appendChild(titleOverlay);
+
+  return tile;
+};
+
+const renderMusicTile = (item, handlers) => {
+  const tile = createBaseTile(item, handlers);
+  tile.classList.add("music-wrapper");
+
+  const musicCoverBox = document.createElement("div");
+  musicCoverBox.className = "music-cover-box";
+
+  const artworkUrl = item.payload?.artworkUrl || "";
+  const img = document.createElement("img");
+  img.src = artworkUrl;
+  musicCoverBox.appendChild(img);
+
+  const linksBar = document.createElement("div");
+  linksBar.className = "music-links-bar";
+
+  const createMusicLink = (url, platformKey) => {
+      const btn = document.createElement("div");
+      btn.className = "music-link-btn";
+      btn.innerHTML = platformIcons[platformKey] || platformIcons.default;
+      btn.style.cursor = "pointer";
+      btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation(); // Blocca l'intercettazione del click da parte della card padre
+          if(url) window.open(url, "_blank", "noopener,noreferrer"); // Reindirizzamento effettivo
+      });
+      return btn;
+  };
+
+  if (item.payload?.appleMusicUrl) linksBar.appendChild(createMusicLink(item.payload.appleMusicUrl, "apple"));
+  if (item.payload?.spotifyUrl) linksBar.appendChild(createMusicLink(item.payload.spotifyUrl, "spotify"));
+  if (item.payload?.amazonUrl) linksBar.appendChild(createMusicLink(item.payload.amazonUrl, "amazon"));
+  
+  const musicInfoArea = document.createElement("div");
+  musicInfoArea.className = "music-info-area";
+  
+  const musicTitle = document.createElement("div");
+  musicTitle.className = "music-info-title";
+  musicTitle.textContent = item.title || "(Senza Titolo)";
+  
+  const musicArtist = document.createElement("div");
+  musicArtist.className = "music-info-artist";
+  musicArtist.textContent = item.payload?.artist || "Artista Sconosciuto";
+  
+  musicInfoArea.appendChild(musicTitle);
+  musicInfoArea.appendChild(musicArtist);
+
+  tile.appendChild(musicCoverBox);
+  tile.appendChild(linksBar);
+  tile.appendChild(musicInfoArea);
+
+  return tile;
+};
+
+const renderNoteTile = (item, handlers) => {
+  const tile = createBaseTile(item, handlers);
+  tile.classList.add("note-card");
+
+  const rawDate = item.updated_at || item.created_at || item.updatedAt || item.createdAt ||
+                  item.payload?.updated_at || item.payload?.created_at || item.payload?.updatedAt || item.payload?.createdAt;
+
+  let dateString = "oggi";
+  if (rawDate) {
+      const d = new Date(rawDate);
+      if (!isNaN(d.getTime())) {
+          dateString = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).toLowerCase();
+      }
+  }
+
+  // Estrazione e pulizia preview (Retrocompatibilità text/html)
+  const rawText = item.payload?.html || item.payload?.text || "";
+  // Strip aggressivo di tutti i tag HTML generati da Quill e decodifica entità base
+  const cleanText = rawText.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+
+  let tagsHTML = '';
+  const tags = item.payload?.tags || [];
+  if (tags.length > 0) {
+      tagsHTML = '<div class="note-tags">';
+      tags.forEach(t => {
+          const tagLabel = t.startsWith('#') ? t : `#${t}`;
+          tagsHTML += `<span class="note-tag">${tagLabel}</span>`;
+      });
+      tagsHTML += '</div>';
+  }
+
+  tile.innerHTML = `
+      <div class="note-header">
+          <span class="note-date">${dateString}</span>
+          <i class="bi bi-three-dots note-options-icon"></i>
+      </div>
+      <h3 class="note-title">${item.title || "(Senza Titolo)"}</h3>
+      <p class="note-preview">${cleanText}</p>
+      ${tagsHTML}
+  `;
+
+  return tile;
+};
+
+const renderDefaultTile = (item, handlers) => {
+  const tile = createBaseTile(item, handlers);
+
+  const title = document.createElement("div");
+  title.className = "content-title";
+  title.textContent = item.title || "(senza titolo)";
+
+  const icon = document.createElement("i");
+  icon.className = `bi ${typeIcons[item.type] || "bi-dot"} content-icon fs-3`;
+  tile.appendChild(icon);
+  tile.appendChild(title);
+
+  return tile;
+};
+
+const tileFactory = {
+  getRenderer: (item, currentParentId) => {
+    if (item.type === "box" && currentParentId !== "root") return renderBoxTile;
+    if (isMovieItem(item)) return renderMovieTile;
+    if (item.type === "music") return renderMusicTile;
+    if (item.type === "note") return renderNoteTile;
+    return renderDefaultTile;
+  }
+};
+
 export const renderContentsGrid = async (
   items,
   {
@@ -203,176 +418,11 @@ export const renderContentsGrid = async (
   
   activeExtractZone.classList.toggle("in-folder", currentParentId !== "root");
 
+  const handlers = { onTileClick, onContextMenu, onTileReady, fetchFolderPreview };
+
   items.forEach((item) => {
-    const tile = document.createElement("div");
-    tile.className = "content-tile";
-    tile.dataset.type = item.type;
-    tile.dataset.id = item.id;
-    tile.setAttribute("draggable", "true");
-    tile.style.gridColumn = "auto";
-    tile.style.gridColumnStart = "auto";
-    tile.style.justifySelf = "auto";
-
-    const title = document.createElement("div");
-    title.className = "content-title";
-    title.textContent = item.title || "(senza titolo)";
-
-    if (item.type === "box" && currentParentId !== "root") {
-      tile.classList.add("folder-tile");
-
-      const folderBody = document.createElement("div");
-      folderBody.className = "folder-body";
-
-      const folderIcon = document.createElement("i");
-      folderIcon.className = `bi ${typeIcons.box} folder-icon`;
-      folderBody.appendChild(folderIcon);
-
-      const preview = document.createElement("div");
-      preview.className = "folder-preview-grid";
-      folderBody.appendChild(preview);
-
-      tile.appendChild(folderBody);
-      tile.appendChild(title);
-
-      fetchFolderPreview(item.id)
-        .then((previewItems) => renderFolderPreview(preview, previewItems))
-        .catch(() => renderFolderPreview(preview, []));
-    } else if (isMovieItem(item)) {
-      tile.classList.add("movie-tile");
-
-      const posterPath = item?.payload?.poster_path || "";
-      if (posterPath) {
-        const fullPosterUrl = posterPath.startsWith("http") ? posterPath : `https://image.tmdb.org/t/p/w500${posterPath}`;
-        tile.style.backgroundImage = `url(${fullPosterUrl})`;
-        tile.style.backgroundSize = "cover";
-        tile.style.backgroundPosition = "center";
-      }
-
-      const glassBadge = document.createElement("div");
-      glassBadge.className = "movie-glass-badge";
-      glassBadge.innerHTML = buildMovieBadgeHTML(item);
-      tile.appendChild(glassBadge);
-
-      const titleOverlay = document.createElement("div");
-      titleOverlay.className = "movie-title-overlay";
-      title.classList.add("movie-title");
-      titleOverlay.appendChild(title);
-      tile.appendChild(titleOverlay);
-    } else if (item.type === 'music') {
-      tile.classList.add("music-wrapper");
-
-      const musicCoverBox = document.createElement("div");
-      musicCoverBox.className = "music-cover-box";
-
-      const artworkUrl = item.payload?.artworkUrl || "";
-      const img = document.createElement("img");
-      img.src = artworkUrl;
-      musicCoverBox.appendChild(img);
-
-      const linksBar = document.createElement("div");
-      linksBar.className = "music-links-bar";
-
-      const createMusicLink = (url, platformKey) => {
-          const btn = document.createElement("div");
-          btn.className = "music-link-btn";
-          btn.innerHTML = platformIcons[platformKey] || platformIcons.default;
-          btn.style.cursor = "pointer";
-          btn.addEventListener("click", (e) => {
-              e.preventDefault();
-              e.stopPropagation(); // Blocca l'intercettazione del click da parte della card padre
-              if(url) window.open(url, "_blank", "noopener,noreferrer"); // Reindirizzamento effettivo
-          });
-          return btn;
-      };
-
-      if (item.payload?.appleMusicUrl) linksBar.appendChild(createMusicLink(item.payload.appleMusicUrl, "apple"));
-      if (item.payload?.spotifyUrl) linksBar.appendChild(createMusicLink(item.payload.spotifyUrl, "spotify"));
-      if (item.payload?.amazonUrl) linksBar.appendChild(createMusicLink(item.payload.amazonUrl, "amazon"));
-      
-      const musicInfoArea = document.createElement("div");
-      musicInfoArea.className = "music-info-area";
-      
-      const musicTitle = document.createElement("div");
-      musicTitle.className = "music-info-title";
-      musicTitle.textContent = item.title || "(Senza Titolo)";
-      
-      const musicArtist = document.createElement("div");
-      musicArtist.className = "music-info-artist";
-      musicArtist.textContent = item.payload?.artist || "Artista Sconosciuto";
-      
-      musicInfoArea.appendChild(musicTitle);
-      musicInfoArea.appendChild(musicArtist);
-
-      tile.appendChild(musicCoverBox);
-      tile.appendChild(linksBar);
-      tile.appendChild(musicInfoArea);
-    } else if (item.type === 'note') {
-      tile.classList.add("note-card");
-
-      const rawDate = item.updated_at || item.created_at || item.updatedAt || item.createdAt ||
-                      item.payload?.updated_at || item.payload?.created_at || item.payload?.updatedAt || item.payload?.createdAt;
-
-      let dateString = "oggi";
-      if (rawDate) {
-          const d = new Date(rawDate);
-          if (!isNaN(d.getTime())) {
-              dateString = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).toLowerCase();
-          }
-      }
-
-      // Estrazione e pulizia preview (Retrocompatibilità text/html)
-      const rawText = item.payload?.html || item.payload?.text || "";
-      // Strip aggressivo di tutti i tag HTML generati da Quill e decodifica entità base
-      const cleanText = rawText.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
-
-      let tagsHTML = '';
-      const tags = item.payload?.tags || [];
-      if (tags.length > 0) {
-          tagsHTML = '<div class="note-tags">';
-          tags.forEach(t => {
-              const tagLabel = t.startsWith('#') ? t : `#${t}`;
-              tagsHTML += `<span class="note-tag">${tagLabel}</span>`;
-          });
-          tagsHTML += '</div>';
-      }
-
-      tile.innerHTML = `
-          <div class="note-header">
-              <span class="note-date">${dateString}</span>
-              <i class="bi bi-three-dots note-options-icon"></i>
-          </div>
-          <h3 class="note-title">${item.title || "(Senza Titolo)"}</h3>
-          <p class="note-preview">${cleanText}</p>
-          ${tagsHTML}
-      `;
-    } else {
-      const icon = document.createElement("i");
-      icon.className = `bi ${typeIcons[item.type] || "bi-dot"} content-icon fs-3`;
-      tile.appendChild(icon);
-      tile.appendChild(title);
-    }
-
-    tile.addEventListener("click", (event) => {
-      if (event.ctrlKey || event.metaKey) {
-        event.stopPropagation();
-        tile.classList.toggle("is-selected");
-        return;
-      }
-      
-      // FIX: Se è una card musicale, annulla il click per evitare il dump del JSON di debug
-      if (item.type === 'music') {
-        return;
-      }
-      
-      onTileClick(item);
-    });
-
-    tile.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      onContextMenu(item, event);
-    });
-
-    onTileReady(tile, item);
+    const renderer = tileFactory.getRenderer(item, currentParentId);
+    const tile = renderer(item, handlers);
     targetContainer.appendChild(tile);
   });
 

@@ -1,4 +1,13 @@
-const pool = require("../config/db"); // Already lowercase, no change needed
+const pool = require("../config/db");
+
+const PERMISSION_MATRIX = {
+  movie: ["movie", "box"],
+  music: ["music", "box"],
+  note: ["note", "todo_list", "recipe", "box"],
+  todo_list: ["todo_list", "note", "box"],
+  recipe: ["recipe", "note", "box"],
+  root: ["note", "todo_list", "recipe", "movie", "music", "box"]
+};
 
 class contentService {
   static async getAllContentsForUser(userId) {
@@ -12,6 +21,66 @@ class contentService {
   static async createContent(userId, data) {
     const { type, title, tags, payload, parent_id, position, status, content_data } = data;
     
+    if (!title) {
+      const err = new Error("Il Titolo è obbligatorio");
+      err.status = 400;
+      throw err;
+    }
+    
+    const allowedBaseTypes = ["note", "todo_list", "recipe", "movie", "music", "box"];
+    if (!allowedBaseTypes.includes(type)) {
+      const err = new Error("Tipo di contenuto non consentito");
+      err.status = 403;
+      throw err;
+    }
+
+    let activeFolderType = "root";
+    if (parent_id) {
+       const parentQuery = await pool.query("SELECT * FROM contents WHERE id = $1 AND user_id = $2", [parent_id, userId]);
+       if (parentQuery.rows.length === 0) {
+          const err = new Error("Cartella di destinazione non trovata");
+          err.status = 404;
+          throw err;
+       }
+       const parent = parentQuery.rows[0];
+       if (parent.type !== "box") {
+          const err = new Error("Il parent specificato non è una cartella valida.");
+          err.status = 403;
+          throw err;
+       }
+       
+       let rawType = parent.payload?.allowed_type || parent.payload?.content_type;
+       if (!rawType) {
+         const title = (parent.title || "").toLowerCase();
+         if (/(film|movie)/.test(title)) rawType = "movie";
+         else if (/(todo|to-do|task|lista)/.test(title)) rawType = "todo_list";
+         else if (/(ricett|recipe|cucin)/.test(title)) rawType = "recipe";
+         else if (/(music|album|canzon)/.test(title)) rawType = "music";
+         else rawType = "note";
+       }
+
+       activeFolderType = rawType.toLowerCase();
+
+       if (['notes', 'pensieri', 'pensiero', 'nota'].includes(activeFolderType)) {
+          activeFolderType = 'note';
+       } else if (['music', 'musica', 'album', 'canzone', 'canzoni'].includes(activeFolderType)) {
+          activeFolderType = 'music';
+       } else if (['recipe', 'ricetta', 'ricette'].includes(activeFolderType)) {
+          activeFolderType = 'recipe';
+       } else if (['todo', 'to-do', 'todo_list', 'task', 'lista'].includes(activeFolderType)) {
+          activeFolderType = 'todo_list';
+       } else if (['movie', 'film', 'serie'].includes(activeFolderType)) {
+          activeFolderType = 'movie';
+       }
+    }
+
+    const allowedForFolder = PERMISSION_MATRIX[activeFolderType] || PERMISSION_MATRIX.root;
+    if (!allowedForFolder.includes(type)) {
+       const err = new Error(`Violazione permessi: impossibile creare '${type}' in questo contesto.`);
+       err.status = 403;
+       throw err;
+    }
+
     const result = await pool.query(
       "INSERT INTO contents (user_id, type, title, tags, payload, parent_id, position, status, content_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
       [userId, type, title, tags || [], payload ?? {}, parent_id || null, position || 0, status || null, content_data || null]
@@ -53,7 +122,9 @@ class contentService {
 
   static async bulkMove(userId, itemIds, targetFolderId) {
     if (!Array.isArray(itemIds) || !itemIds.length) {
-      throw new Error("itemIds è obbligatorio.");
+      const err = new Error("itemIds è obbligatorio.");
+      err.status = 400;
+      throw err;
     }
 
     const result = await pool.query(
@@ -78,14 +149,18 @@ class contentService {
       );
 
       if (itemsResult.rows.length !== 2) {
-        throw new Error("Elementi non trovati.");
+        const err = new Error("Elementi non trovati.");
+        err.status = 404;
+        throw err;
       }
 
       const parentId = itemsResult.rows[0].parent_id;
       const sameParent = itemsResult.rows.every((row) => row.parent_id === parentId);
       
       if (!sameParent) {
-        throw new Error("Gli elementi non sono nello stesso contenitore.");
+        const err = new Error("Gli elementi non sono nello stesso contenitore.");
+        err.status = 400;
+        throw err;
       }
 
       const minPosition = Math.min(...itemsResult.rows.map((row) => row.position ?? 0));
@@ -184,6 +259,17 @@ class contentService {
       values
     );
     
+    return result.rows[0];
+  }
+
+  static async updateMovieReview(userId, contentId, rating, notes) {
+    const query = `
+      UPDATE contents 
+      SET payload = payload || jsonb_build_object('review_rating', $1::int, 'review_notes', $2::text)
+      WHERE id = $3 AND user_id = $4
+      RETURNING *;
+    `;
+    const result = await pool.query(query, [rating, notes, contentId, userId]);
     return result.rows[0];
   }
 }
