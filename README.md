@@ -16,6 +16,14 @@ Frontend: Vanilla JS (ES6 Modules) & CSS Grid/Flexbox. Zero frameworks.
 Auth: Stateless JWT authentication.
 
 🚀 Quick Start
-git clone https://github.com/yungpryzed/Mindhub.gitcd Mindhubnpm installpsql -U postgres -c "CREATE DATABASE mindhub;"# Add your DB credentials and JWT_SECRET to a .env filenpm run dev
 
-Built from scratch to practice real-world backend patterns and clean code.
+```bash
+git clone https://github.com/yungpryzed/Mindhub.git
+cd Mindhub
+npm install
+psql -U postgres -c "CREATE DATABASE mindhub;"
+# Add your DB credentials and JWT_SECRET to a .env file
+npm run dev
+```
+
+Built from scratch to practice real-world backend patterns and clean code
