@@ -1,29 +1,21 @@
-# 🧠 MINDHUB
+🧠 MindHub
+A clean, dark-mode "Second Brain" dashboard built to centralize movies, music, notes, and to-dos into one interconnected personal hub.
 
-MINDHUB è una dashboard multimediale e hub mentale scura, pulita e minimale, progettata per centralizzare film, musica, appunti e attività in un unico secondo cervello interconnesso.
+Instead of using heavy frontend frameworks, I built this to deeply understand how data flows from the database to the DOM using pure JavaScript.
 
-## 🚀 Caratteristiche Principali
-* **Doppia Visualizzazione (Home View Switcher):** Possibilità di switchare istantaneamente tramite un toggle discreto nella sidebar tra la visualizzazione "a Cartelle" (Cinema, Appunti, Musica, To Do List) e la visualizzazione "Dashboard" analitica (stile Netflix/Spotify).
-* **Integrazione API Esterne:** Sincronizzazione dinamica dei contenuti tramite le API di TMDB (Film) e iTunes (Musica).
-* **Fuzzy Search Integrata:** Barra di ricerca sticky globale accessibile tramite shortcut `Ctrl + K` per filtrare istantaneamente ogni contenuto.
-* **Sistema di Rating:** Badge visivi e anelli di valutazione circolari dinamici basati sui voti del database.
+✨ Key Features
+Dual View System: Instantly switch between a "Folder" view and a Netflix-style "Dashboard" view.
+External APIs Integration: Fetched and merged data from TMDB (movies) and iTunes (music) into unified backend DTOs.
+Global Fuzzy Search: A Ctrl+K shortcut to instantly filter any content across the app.
+Dynamic Rating System: Visual rating badges driven by database data.
 
-## 📁 Struttura del Progetto
-* `/backend` — Logica server, configurazioni, controller, rotte e servizi Node.js.
-* `/public` — Frontend in Vanilla JS e CSS puro organizzato in moduli e feature.
-  * `/core` — Componenti globali condivisi (Sidebar, layout di base, gestione DOM).
-  * `/features` — Moduli dedicati alle singole sezioni (movies, music, notes, todos, dashboard).
+🛠️ Tech Stack & Architecture
+Backend: Node.js, Express.js (Strict Controller/Service layer separation)
+Database: PostgreSQL (Used JSONB payloads for flexible, polymorphic data storage)
+Frontend: Vanilla JS (ES6 Modules) & CSS Grid/Flexbox. Zero frameworks.
+Auth: Stateless JWT authentication.
 
-## 🛠️ Tecnologie Utilizzate
-* **Backend:** Node.js, Express.js
-* **Database:** PostgreSQL
-* **Frontend:** Vanilla JS (ES6+), HTML5, CSS Grid / Flexbox (No Framework)
-* **Infrastruttura:** Containerizzazione tramite Podman
+🚀 Quick Start
+git clone https://github.com/yungpryzed/Mindhub.gitcd Mindhubnpm installpsql -U postgres -c "CREATE DATABASE mindhub;"# Add your DB credentials and JWT_SECRET to a .env filenpm run dev
 
-## 🏃‍♂️ Come Avviare il Progetto
-1. Installa le dipendenze: `npm install`
-2. Configura il file `.env` con le tue credenziali di database e chiavi API.
-3. Avvia l'ambiente tramite la CLI di Antigravity o Node.js.
-
----
-*MINDHUB — Il tuo archivio mentale, ordinato.*
+Built from scratch to practice real-world backend patterns and clean code.
