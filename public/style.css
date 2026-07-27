@@ -92,10 +92,9 @@ body {
   width: 100%;
   max-width: 420px;
   background: var(--surface);
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 48px 40px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .login-header {
@@ -311,8 +310,8 @@ body {
 }
 
 .nav-control-btn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(30, 30, 30, 0.5);
@@ -604,12 +603,12 @@ body {
 }
 
 #toggleCreate {
-  width: 42px !important;
-  height: 42px !important;
-  min-width: 42px !important;
-  min-height: 42px !important;
-  max-width: 42px !important;
-  max-height: 42px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
   border-radius: 50% !important;
   padding: 0 !important;
   display: flex !important;
@@ -632,8 +631,8 @@ body {
 
 #toggleCreate:active,
 #toggleCreate:focus {
-  width: 42px !important;
-  height: 42px !important;
+  width: 44px !important;
+  height: 44px !important;
   border-radius: 50% !important;
   transform: translateY(0) scale(0.95);
   outline: none !important;
@@ -643,18 +642,17 @@ body {
    6. COMPONENTI ROOT: BOX STANDARD (RESTYLING LINEAR/VERCEL)
    ========================================================================== */
 .content-tile {
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  aspect-ratio: 1;
   background: linear-gradient(145deg, rgba(30, 30, 30, 0.6), rgba(18, 18, 18, 0.9));
 
 
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.04);
   position: relative;
   cursor: pointer;
   user-select: none;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
@@ -665,7 +663,6 @@ body {
   transform: translateY(-6px) scale(1.015);
   border-color: rgba(255, 255, 255, 0.12);
   background: linear-gradient(145deg, rgba(38, 38, 38, 0.8), rgba(22, 22, 22, 1));
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   z-index: 10;
 }
 
@@ -703,8 +700,8 @@ body {
 
 /* Cartelle Root */
 .folder-tile {
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  aspect-ratio: 1;
   padding: 0;
   border: none;
   background: transparent;
@@ -723,10 +720,9 @@ body {
   height: 100%;
   background: linear-gradient(145deg, rgba(35, 35, 35, 0.6), rgba(20, 20, 20, 0.9));
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateZ(0);
   will-change: transform, box-shadow;
@@ -735,7 +731,6 @@ body {
 .folder-tile:hover .folder-body {
   border-color: rgba(255, 255, 255, 0.12);
   background: linear-gradient(145deg, rgba(45, 45, 45, 0.8), rgba(25, 25, 25, 1));
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .folder-icon {
@@ -787,7 +782,6 @@ body {
 
 .content-grid.is-dragging .content-tile:hover {
   transform: none !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
   background: linear-gradient(145deg, rgba(30, 30, 30, 0.6), rgba(18, 18, 18, 0.9)) !important;
   border-color: rgba(255, 255, 255, 0.04) !important;
   z-index: 1 !important;
@@ -795,7 +789,6 @@ body {
 
 .content-grid.is-dragging .folder-tile:hover .folder-body {
   transform: none !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
   background: linear-gradient(145deg, rgba(35, 35, 35, 0.6), rgba(20, 20, 20, 0.9)) !important;
   border-color: rgba(255, 255, 255, 0.04) !important;
 }
@@ -1759,7 +1752,7 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
 .search-results-list .result-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
     padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -1772,6 +1765,26 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
     color: var(--white);
 }
 
+.search-result-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.search-result-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.search-result-text-block {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
 .result-item-icon {
   font-size: 1.1rem;
   color: var(--text-icons);
@@ -1781,6 +1794,19 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
 
 .result-item-label {
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.result-item-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-icons);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .result-item.is-active,
@@ -1805,20 +1831,41 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+.search-result-thumb.square {
+    width: 45px;
+    height: 45px;
+}
+
+.search-result-badge {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.badge-type {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-lightgray);
+}
+
+.badge-rating {
+    background: rgba(245, 197, 24, 0.15);
+    color: #F5C518;
+}
+
+.search-result-rating-icon {
+    color: #F5C518;
+}
+
 /* ==========================================================================
    18. MUSIC TILE & COMPONENTS
    ========================================================================== */
 
-.content-grid:has(.music-wrapper) {
-    column-gap: 64px !important;
-    row-gap: 32px !important;
-}
-
 .content-tile.music-wrapper {
     height: auto !important;
     min-height: 0 !important;
-    width: 280px !important; /* Unito qui per pulizia del codice */
-    max-width: 100%;
+    width: 100% !important;
     aspect-ratio: auto !important;
     background: transparent !important;
     border: none !important;
@@ -1896,7 +1943,6 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
     padding: 6px 12px;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .content-tile.music-wrapper:hover .music-links-bar {
@@ -1938,7 +1984,6 @@ body.is-dragging-global:has(.smart-extract-zone.in-folder) #searchModal {
 
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 #musicResults .list-group-item {
     background: transparent;

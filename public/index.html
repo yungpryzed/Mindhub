@@ -26,7 +26,7 @@
       <div class="login-container">
         <div class="login-header">
           <div class="login-logo-placeholder">
-            <img src="assets/mindhublogo.svg" alt="MindHub" class="login-logo-icon" />
+            <img src="assets/mindhublogo.svg" alt="MindHub" class="login-logo-icon" loading="lazy" />
           </div>
           <div class="login-brand">
             <span class="brand-name">MindHub</span>
@@ -41,7 +41,7 @@
 
         <form id="loginForm" class="login-form">
           <div class="input-group-custom">
-            <label class="input-label">Email</label>
+            <label class="input-label" for="loginEmail">Email</label>
             <div class="input-wrapper">
               <i class="bi bi-envelope input-icon-left"></i>
               <input id="loginEmail" type="email" class="input-field" placeholder="test@example.com" autocomplete="email" required />
@@ -49,11 +49,11 @@
           </div>
 
           <div class="input-group-custom">
-            <label class="input-label">Password</label>
+            <label class="input-label" for="loginPassword">Password</label>
             <div class="input-wrapper">
               <i class="bi bi-lock input-icon-left"></i>
               <input id="loginPassword" type="password" class="input-field" placeholder="••••••••" autocomplete="current-password" required />
-              <i class="bi bi-eye input-icon-right" id="togglePasswordVisibility" style="cursor: pointer;"></i>
+              <i class="bi bi-eye input-icon-right" id="togglePasswordVisibility" style="cursor: pointer;" role="button" tabindex="0" aria-label="Toggle password visibility"></i>
             </div>
           </div>
 
@@ -86,7 +86,7 @@
       <!-- SIDEBAR A SCOMPARSA (VS CODE TREE VIEW) -->
       <aside id="sidebarDrawer" class="sidebar-drawer">
         <div class="sidebar-header d-flex align-items-center gap-2 mb-3 px-3">
-          <img src="assets/mindhublogo.svg" alt="MindHub" style="width: 24px; height: 24px;" />
+          <img src="assets/mindhublogo.svg" alt="MindHub" style="width: 24px; height: 24px;" loading="lazy" />
           <h2 class="sidebar-title mb-0">MindHub</h2>
         </div>
         <div id="sidebarTree"></div>
